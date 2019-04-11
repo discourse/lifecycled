@@ -1,0 +1,5 @@
+LIFECYCLED_HANDLER=/usr/local/bin/my_graceful_shutdown.sh
+LIFECYCLED_NO_SPOT=true
+LIFECYCLED_DEBUG=true
+AWS_REGION=us-west-2
+LIFECYCLED_SNS_TOPIC=arn:aws:sns:us-west-2:0123123123:my-termination-hook
