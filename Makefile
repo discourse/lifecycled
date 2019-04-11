@@ -1,8 +1,8 @@
 VERSION=$(shell git describe --tags --candidates=1 --dirty 2>/dev/null || echo "dev")
 FLAGS=-s -w -X main.Version=$(VERSION)
 SRC=$(shell find . -type f -name '*.go' -not -path "./vendor/*")
-USER=$(shell git config user.name")
-EMAIL=$(shell git config user.email")
+USER=$(shell git config user.name)
+EMAIL=$(shell git config user.email)
 
 export GO111MODULE=on
 
@@ -44,4 +44,4 @@ package:
 	cp -r etc deb/
 	mkdir -p deb/etc/init
 	cp init/upstart/lifecycled.conf deb/etc/init/lifecycled.conf
-	fpm -s dir -t deb -n lifecycled --deb-generate-changes --description "A daemon designed to run on an AWS EC2 instance and listen for various state change mechanisms" --maintainer "$(USER) <$(EMAIL)>" --version "3.0.2" --force --chdir deb .
+	fpm -s dir -t deb -n lifecycled --deb-generate-changes --description "A daemon designed to run on an AWS EC2 instance and listen for various state change mechanisms" --maintainer "$(USER) <$(EMAIL)>" --version "$(VERSION)" --force --chdir deb .
