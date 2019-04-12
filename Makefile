@@ -45,4 +45,4 @@ package:
 	cp lifecycled deb/usr/bin/
 	cp -r etc deb/
 	cp init/upstart/lifecycled.conf deb/etc/init/lifecycled.conf
-	fpm -s dir -t deb -n lifecycled --deb-generate-changes --description "A daemon designed to run on an AWS EC2 instance and listen for various state change mechanisms" --maintainer "$(USER) <$(EMAIL)>" --version "$(VERSION)" --force --chdir deb .
+	fpm -s dir -t deb -n lifecycled --deb-generate-changes --deb-dist "trusty" --description "A daemon designed to run on an AWS EC2 instance and listen for various state change mechanisms" --maintainer "$(USER) <$(EMAIL)>" --version "$(VERSION)" --force --chdir deb .
