@@ -3,6 +3,7 @@ FLAGS=-s -w -X main.Version=$(VERSION)
 SRC=$(shell find . -type f -name '*.go' -not -path "./vendor/*")
 USER=$(shell git config user.name)
 EMAIL=$(shell git config user.email)
+DIST?=stretch
 
 export GO111MODULE=on
 
@@ -40,9 +41,25 @@ arm64:
 
 .PHONY: package
 package:
-	mkdir -p deb/usr/bin/
-	mkdir -p deb/etc/init
-	cp lifecycled deb/usr/bin/
-	cp -r etc deb/
-	cp init/upstart/lifecycled.conf deb/etc/init/lifecycled.conf
-	fpm -s dir -t deb -n lifecycled --deb-generate-changes --deb-dist "trusty" --description "A daemon designed to run on an AWS EC2 instance and listen for various state change mechanisms" --maintainer "$(USER) <$(EMAIL)>" --version "$(VERSION)" --force --chdir deb .
+	rm -rf deb/*
+	# binary
+	install -D -m 0755 lifecycled deb/usr/sbin/lifecycled
+	# upstart init file
+	install -D -m 0644 init/upstart/lifecycled.conf deb/etc/init/lifecycled.conf
+	# config file
+	install -D -m 0644 etc/lifecycled deb/etc/lifecycled
+	fpm \
+		-s dir \
+		-t deb \
+		-n lifecycled \
+		--deb-generate-changes \
+		--deb-dist "$(DIST)" \
+		--description "A daemon designed to run on an AWS EC2 instance and listen for various state change mechanisms" \
+		--maintainer "$(USER) <$(EMAIL)>" \
+		--version "$(VERSION)" \
+		--force \
+		--chdir deb \
+		--deb-no-default-config-files \
+		--deb-init init/sysv/lifecycled \
+		--config-files /etc/lifecycled \
+		.

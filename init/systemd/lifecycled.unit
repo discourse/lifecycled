@@ -10,7 +10,7 @@ RestartForceExitStatus=SIGPIPE
 RestartSec=30s
 TimeoutStopSec=5m
 EnvironmentFile=/etc/lifecycled
-ExecStart=/usr/bin/lifecycled
+ExecStart=/usr/sbin/lifecycled
 
 [Install]
 WantedBy=multi-user.target

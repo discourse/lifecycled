@@ -1,0 +1,60 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          lifecycled
+# Required-Start:    $network
+# Required-Stop:     $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Autoscale Lifecycle Daemon
+# Description:       Lifecycled is designed to run on an AWS EC2 instance and
+#                    listen for various state change mechanisms. When a
+#                    termination notice is received, lifecycled runs a
+#                    user-provided script (called a handler) and then proceeds
+#                    with the shutdown. This script can be used to gracefully
+#                    terminate any daemons you have running.
+### END INIT INFO
+
+# Author: Michael Brown <michael.brown@discourse.org>
+
+DESC="Autoscale Lifecycled Daemon"
+DAEMON=/usr/sbin/lifecycled
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+PIDFILE=/var/run/lifecycled.pid
+
+test -x $DAEMON || exit 0
+
+. /lib/lsb/init-functions
+
+. /etc/lifecycled
+export AWS_REGION
+export LIFECYCLED_HANDLER
+export LIFECYCLED_NO_SPOT
+export LIFECYCLED_DEBUG
+export LIFECYCLED_SNS_TOPIC
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting $DESC" "lifecycled"
+	/sbin/start-stop-daemon --start --chdir / --make-pidfile --pidfile $PIDFILE --background --exec $DAEMON >> /var/log/lifecycled.log 2>&1
+	log_end_msg $?
+    ;;
+  stop)
+	log_daemon_msg "Stopping $DESC" "lifecycled"
+	killproc -p $PIDFILE $DAEMON
+	log_end_msg $?
+    ;;
+  force-reload|restart)
+	$0 stop
+	$0 start
+    ;;
+  status)
+	status_of_proc -p $PIDFILE $DAEMON lifecycled && exit 0 || exit $?
+    ;;
+  *)
+	echo "Usage: /etc/init.d/lifecycled {start|stop|restart|force-reload|status}"
+	exit 1
+    ;;
+esac
+
+exit 0
+
