@@ -1,7 +1,6 @@
 /handler.sh
 build/
+/deb
 /lifecycled
-
-# Terraform
-**/.terraform
-*.tfstate*
+/lifecycled_*.changes
+/lifecycled_*.deb
