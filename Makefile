@@ -10,6 +10,10 @@ export GO111MODULE=on
 lifecycled: *.go
 	go build -o lifecycled -ldflags="$(FLAGS)" -v ./cmd/lifecycled
 
+.PHONY: docker
+docker:
+	docker run --rm -v $(PWD):/go/src/lifecycled -e GOCACHE=/go/src/lifecycled/build/.cache -u `id -u`:`id -g` golang make -C /go/src/lifecycled
+
 .PHONY: test
 test:
 	gofmt -s -l -w $(SRC)
