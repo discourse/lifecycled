@@ -13,6 +13,7 @@ lifecycled: *.go
 .PHONY: docker
 docker:
 	docker run --rm -v $(PWD):/go/src/lifecycled -e GOCACHE=/go/src/lifecycled/build/.cache -u `id -u`:`id -g` golang make -C /go/src/lifecycled
+	docker run --rm -v $(PWD):/src -e DIST=$(DIST) debian:$(DIST) /src/docker_buildpkg
 
 .PHONY: test
 test:

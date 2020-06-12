@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+cd "$(dirname "$0")"
+
+DEBIAN_FRONTEND=noninteractive apt update
+DEBIAN_FRONTEND=noninteractive apt -y install git ruby ruby-dev build-essential libffi-dev
+gem install fpm
+
+make package DIST=$DIST
+find . -name 'lifecycled*' -uid 0 | xargs chown --reference=.
